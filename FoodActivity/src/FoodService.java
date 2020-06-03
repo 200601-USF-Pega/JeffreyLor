@@ -1,9 +1,8 @@
-import java.io.EOFException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -47,9 +46,9 @@ public class FoodService
 	
 	public void createSalad()
 	{
-		System.out.print("What is the name of the soup? ");
+		System.out.print("What is the name of the salad? ");
 		String name = scan.nextLine();
-		System.out.println("What do you want in the soup? (separate by commas)");
+		System.out.println("What do you want in the salad? (separate by commas)");
 		String ingredient = scan.nextLine();
 		String [] ingredients = ingredient.split(",");
 		System.out.print("What kind of dressing? ");
@@ -64,10 +63,13 @@ public class FoodService
 	{	
 		try
 		{
-			ObjectOutputStream objectOutputStream = 
-					new ObjectOutputStream(new FileOutputStream("receipt.txt"));
-			objectOutputStream.writeObject(foodList);
-			objectOutputStream.close();
+			FileWriter fw = new FileWriter("receipt.txt");
+			for(Food f : foodList)
+			{
+				fw.write(f.toString());
+			}
+			fw.flush();
+			fw.close();
 		}
 		catch(IOException e)
 		{
@@ -79,21 +81,19 @@ public class FoodService
 	public void readReceipt()
 	{
 		try {
-			ObjectInputStream inputStream = 
-					new ObjectInputStream(new FileInputStream("receipt.txt"));
-			ArrayList<Food> list = (ArrayList<Food>)inputStream.readObject();
-			for(Food f : list)
-			{
-				System.out.println(f);
-			}
-			inputStream.close();
+			FileReader fr = new FileReader("receipt.txt");
+			BufferedReader br = new BufferedReader(fr);
+			
+			int i;
+	        while((i=br.read())!=-1){
+	        	System.out.print((char)i);
+	        }
+	        br.close();   
+	        fr.close();
+	        System.out.println();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-	}
-	
+	}	
 }
